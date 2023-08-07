@@ -30,13 +30,21 @@ function doPost(e) {
   var data = JSON.parse(e.postData.contents);
   var text = data.message.text;
   var id = data.message.chat.id;
-  var name = data.message.chat.first_name + " " + data.message.chat.last_name;
-  var answer =
-    "Привіт " + name + ", Дякую за запис до найкрутішого веб серверу ";
-  sendText(id, answer);
-  SpreadsheetApp.openById(ssId)
-    .getSheets()[0]
-    .appendRow([new Date(), id, name, text]);
+  var name = data.message.chat.first_name;
+  var answer = "Дякую, " + name + ", за запис до найкрутішого веб серверу ";
+  var command =
+    "Привіт! " +
+    name +
+    ", Залиш будь ласка свої дані в такому форматі та одним повідомленням (Ім'я, електронна пошта, номер телефону)";
+
+  if (text == "/start") {
+    sendText(id, command);
+  } else {
+    sendText(id, answer);
+    SpreadsheetApp.openById(ssId)
+      .getSheets()[0]
+      .appendRow([new Date(), id, name, text]);
+  }
 
   if (/^@/.test(text)) {
     var sheetName = text.slice(1).split(" ")[0];
